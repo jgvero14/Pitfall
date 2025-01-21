@@ -51,7 +51,7 @@ class Map {
         void moveUser(Player& user, char response);
         void moveComputer();
         void congratulate(std::string word);
-        bool playGame(Map m1, Player& user, char response);
+        bool playGame(Map& m1, Player& user, char response);
 
     private:
         int** board;
@@ -227,7 +227,7 @@ void Map::congratulate(std::string word) {
 }
 
 // Plays the game on a certain map
-bool Map::playGame(Map m1, Player& user, char response) {
+bool Map::playGame(Map& m1, Player& user, char response) {
     // Loops until user wins or loses
     do {
         system("clear");
@@ -263,7 +263,6 @@ int main() {
     fflush(stdin);
 
     for (int i = 0; i < match.size(); i++) {
-
         bool won = match.at(i).playGame(match.at(i), user, response);
         if (won && i == match.size() - 1) match.at(i).congratulate(" Winner ");
         else if (won) continue;
