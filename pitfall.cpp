@@ -95,16 +95,17 @@ void printBoard(int board[ROWS][COLS], Player user, Player computer) {
 }
 
 // Changes the user's location based on their input
-void moveUser(int board[ROWS][COLS], Player& user, char response) {
+void moveUser(int board[ROWS][COLS], Player& user, Player& computer, char response) {
     // Switch ensures a valid key was pressed
     switch(response) {
-            case 'a': if (board[user.y][user.x - 1] != 1) user.x--;
+            case 'a': if (user.y >= 0 && user.y < 20 && user.x - 1 >= 0 && user.x - 1 < 40 && user.x != computer.x && user.y != computer.y && board[user.y][user.x - 1] == 0) user.x--;
                       break;
-            case 's': if (board[user.y + 1][user.x] != 1) user.y++;
+            case 's': if (user.y + 1>= 0 && user.y + 1< 20 && user.x >= 0 && user.x < 40 && user.x != computer.x && user.y != computer.y && board[user.y + 1][user.x] == 0) user.y++;
                       break;
-            case 'd': if (board[user.y][user.x + 1] != 1) user.x++;
+            case 'd': if (user.y >= 0 && user.y < 20 && user.x + 1 >= 0 && user.x + 1 < 40 && user.x != computer.x && user.y != computer.y && board[user.y][user.x + 1] == 0) { user.x++;
+            }
                       break;
-            case 'w': if (board[user.y - 1][user.x] != 1) user.y--;
+            case 'w': if (user.y - 1 >= 0 && user.y - 1 < 20 && user.x >= 0 && user.x < 40 && user.x != computer.x && user.y != computer.y && board[user.y - 1][user.x] == 0) user.y--;
                       break;
             default:
                       break;
@@ -113,28 +114,28 @@ void moveUser(int board[ROWS][COLS], Player& user, char response) {
 
 // Changes the computer's location based on random movement
 // Maybe add a search algorithm, such as A* in the 2.0
-void moveComputer(int board[ROWS][COLS], Player& computer) {
+void moveComputer(int board[ROWS][COLS], Player& computer, Player& user) {
     srand(time(0));
     int response;
     do {
         response = rand() % 4;
         switch(response) {
-            case 0: if (board[computer.y][computer.x - 1] != 1) {
+            case 0: if (computer.y >= 0 && computer.y < 20 && computer.x - 1 >= 0 && computer.x - 1 < 40 && board[computer.y][computer.x - 1] == 0) {
                         computer.x--;
                         response = -1;
                     }
                     break;
-            case 1: if (board[computer.y + 1][computer.x] != 1) {
+            case 1: if (computer.y + 1>= 0 && computer.y + 1< 20 && computer.x >= 0 && computer.x < 40 && board[computer.y + 1][computer.x] == 0) {
                         computer.y++;
                         response = -1;
                     }
                     break;
-            case 2: if (board[computer.y][computer.x + 1] != 1) {
+            case 2: if (computer.y >= 0 && computer.y < 20 && computer.x + 1 >= 0 && computer.x + 1 < 40 && board[computer.y][computer.x + 1] == 0) {
                         computer.x++;
                         response = -1;
                     }
                     break;
-            case 3: if (board[computer.y - 1][computer.x] != 1) {
+            case 3: if (computer.y - 1 >= 0 && computer.y - 1 < 20 && computer.x >= 0 && computer.x < 40 && board[computer.y - 1][computer.x] == 0) {
                         computer.y--;
                         response = -1;
                     }
@@ -180,6 +181,7 @@ int main() {
         {1, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 1},
         {1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1}
     };
+
     Player user = {1, 1};
     Player computer = {37, 13, '@'};
 
@@ -196,8 +198,8 @@ int main() {
     // Loops until user wins or loses
     do {
         response = getChar();
-        moveUser(board, user, response);
-        moveComputer(board, computer);
+        moveUser(board, user, computer, response);
+        moveComputer(board, computer, user);
         system("clear");
         printBoard(board, user, computer);
         if (user.x == computer.x && user.y == computer.y) break;
