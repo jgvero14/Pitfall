@@ -301,7 +301,7 @@ int main() {
         // Runs each round/map
         for (int i = 0; i < game.size(); i++) {
             bool won = game.at(i).playGame(user, response); // Plays game
-            if (won && i == game.size() - 1) game.at(i).congratulate(" Congratulations! "); // Checks to see if the user has won the game
+            if (won && i == game.size() - 1) game.at(i).congratulate(" Winner "); // Checks to see if the user has won the game
             else if (won) continue; // Checks to see if the user can move on to the next maze
             else {
                 game.at(i).congratulate(" Defeat ");
