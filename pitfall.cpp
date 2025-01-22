@@ -51,7 +51,7 @@ class Map {
         void moveUser(Player& user, char response);
         void moveComputer();
         void congratulate(std::string word);
-        bool playGame(Map& m1, Player& user, char response);
+        bool playGame(Player& user, char response);
 
     private:
         int** board;
@@ -78,7 +78,7 @@ char getChar() {
     return ch;
 }
 
-// Reads a given files and turns it into a map
+// Reads a given file and turns it into a map
 Map readMap(std::string map, int level) {
     std::fstream file(map, std::ios::in);
     int rows;
@@ -101,6 +101,7 @@ Map readMap(std::string map, int level) {
             m1.set(i, j, currNum);
         }
     }
+    file.close();
     return m1;
 }
 
@@ -183,7 +184,7 @@ void Map::moveUser(Player& user, char response) {
 }
 
 // Changes the computer's location based on random movement
-// Maybe add a search algorithm, such as A* in the 3.0
+// Maybe add a search algorithm, such as A* in the 4.0
 void Map::moveComputer() {
     srand(time(0));
     int response;
@@ -227,48 +228,85 @@ void Map::congratulate(std::string word) {
 }
 
 // Plays the game on a certain map
-bool Map::playGame(Map& m1, Player& user, char response) {
+bool Map::playGame(Player& user, char response) {
     // Loops until user wins or loses
     do {
         system("clear");
-        m1.printBoard(user);
+        printBoard(user);
         if (user.x == computer.x && user.y == computer.y) break;
         response = getChar();
-        m1.moveUser(user, response);
-        m1.moveComputer();
-    } while(m1.get(user.y, user.x) != 2);
+        moveUser(user, response);
+        moveComputer();
+    } while(get(user.y, user.x) != 2);
 
     // Displays whether a loss or victory occurred
-    if (m1.get(user.y, user.x) == 2) {
+    if (get(user.y, user.x) == 2) {
         system("clear");
-        m1.printBoard(user);
+        printBoard(user);
         return true;}
     return false;
 }
 
+// Checks to see if the program begins in the Pitfall directory
+// Ensures access to maps is maintained
+bool checkDirectory() {
+    std::string dir;
+    std::fstream outFile("directory.txt", std::ios::out);
+    std::fstream inFile("directory.txt", std::ios::in);
+    system("pwd >> directory.txt");
+    outFile.close();
+    std::getline(inFile, dir);
+    remove("directory.txt");
+    if (dir.find("Pitfall") == std::string::npos) {
+        std::cout << "\n\033[1;31mPlease open the application from within the Pitfall directory!\n";
+        std::cout << "e.g. Current working directory = .../Pitfall\033[0m\n";
+        return false;
+    }
+    return true;
+}
+
 int main() {
-    char response;
-    std::vector<Map> match; // Vector that contains each map
-    Map m1 = readMap("m1.txt", 1); // Level 1 of the match
-    match.push_back(m1);
-    
-    // Initial location
-    Player user = {1, 1};
+    if (checkDirectory()) {
+        char response;
+        std::vector<Map> game; // Vector that contains each map
+        Map m1 = readMap("maps/m1.txt", 1); // Level 1 of the game
+        game.push_back(m1);
+        Map m2 = readMap("maps/m2.txt", 2); // Level 2 of the game
+        game.push_back(m2);
+        Map m3 = readMap("maps/m3.txt", 3); // Level 3 of the game
+        game.push_back(m3);
+        Map m4 = readMap("maps/m4.txt", 4); // Level 4 of the game
+        game.push_back(m4);
+        Map m5 = readMap("maps/m5.txt", 5); // Level 5 of the game
+        game.push_back(m5);
+        Map m6 = readMap("maps/m6.txt", 6); // Level 6 of the game
+        game.push_back(m6);
+        Map m7 = readMap("maps/m7.txt", 7); // Level 7 of the game
+        game.push_back(m7);
+        Map m8 = readMap("maps/m8.txt", 8); // Level 8 of the game
+        game.push_back(m8);
+        Map m9 = readMap("maps/m9.txt", 9); // Level 9 of the game
+        game.push_back(m9);
 
-    system("clear");
-    printInstructions();
-    std::cin >> response;
-    user.symbol = response; // Gets user's symbol
-    std::cin.clear();
-    fflush(stdin);
+        // Initial location
+        Player user = {1, 1};
 
-    for (int i = 0; i < match.size(); i++) {
-        bool won = match.at(i).playGame(match.at(i), user, response);
-        if (won && i == match.size() - 1) match.at(i).congratulate(" Winner ");
-        else if (won) continue;
-        else {
-            match.at(i).congratulate(" Defeat ");
-            break;
+        system("clear");
+        printInstructions();
+        std::cin >> response;
+        user.symbol = response; // Gets user's symbol
+        std::cin.clear();
+        fflush(stdin);
+
+        // Runs each round/map
+        for (int i = 0; i < game.size(); i++) {
+            bool won = game.at(i).playGame(user, response); // Plays game
+            if (won && i == game.size() - 1) game.at(i).congratulate(" Congratulations! "); // Checks to see if the user has won the game
+            else if (won) continue; // Checks to see if the user can move on to the next maze
+            else {
+                game.at(i).congratulate(" Defeat ");
+                break;
+            }
         }
     }
 
