@@ -1,3 +1,3 @@
-# Pitfall
-# This is a terminal-based replication of the 1982 game "Pitfall", but it also has inspiration from Pac-Man
-# It only includes one map as of yet, but future committs will include updates
+# This is a terminal-based replication of the 1982 game "Pitfall"
+# It currently has 9 maps each of which are mazes that contain an enemy hunting for you
+# In order to run the application, you must be in Pitfall directory
