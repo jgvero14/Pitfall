@@ -258,7 +258,7 @@ bool checkDirectory() {
     std::getline(inFile, dir);
     remove("directory.txt");
     if (dir.find("pitfall") == std::string::npos && dir.find("Pitfall") == std::string::npos) {
-        std::cout << "\n\033[1;31mPlease open the application from within the Pitfall directory!\n";
+        std::cout << "\033[1;31mPlease open the application from within the Pitfall directory!\n";
         std::cout << "e.g. Current working directory = .../Pitfall\033[0m\n";
         return false;
     }
